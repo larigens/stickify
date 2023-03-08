@@ -1,43 +1,47 @@
 // Models are defined through the Schema interface.
 const { Schema, model } = require('mongoose');
+const emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+const usernameRegex = "/^[a-zA-Z0-9_]+$/";
 
 // Schema to create User model.
 const userSchema = new Schema(
     {
         // Add individual properties and their types.
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
-        },
-        age: {
-            type: Number,
-            required: true,
-        },
         username: {
-            type: Schema.Types.Mixed,
-            required: true,
+            type: String,
+            unique: true, // Unique index.
+            trim: true, // This will remove whitespace from the beginning and end of the string.
+            validate: {
+                validator: function (value) {
+                    return usernameRegex.text(value);
+                },
+                message: 'Username must only contain letters, numbers, and underscores.'
+            },
+            required: [true, 'Username is required!'] // If true need to add a required validator for this property.
         },
-        password: {
-            type: Schema.Types.Mixed,
-            required: true,
-            minLength: 6,
-            maxlength: 20,
-        },
-        // Use built in date method to get current date.
-        createdAt: {
-            type: Date,
-            default: Date.now
+        email: {
+            type: String,
+            unique: true, // Unique index.
+            validate: {
+                validator: function (value) {
+                    return emailRegex.text(value);
+                },
+                message: props => `${props.value} is not a valid email!`
+            },
+            required: [true, 'Email is required!']
         },
         thoughts: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'thoughts',
+                ref: 'thought',
             },
         ],
+        friends: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'user',
+            },
+        ]
     },
     {
         // Schema option to transform Objects after querying MongoDb.
@@ -48,16 +52,11 @@ const userSchema = new Schema(
     }
 );
 
-// Create a virtual property `fullName` that gets and sets the user's full name.
+// Create a virtual property `friendCount` that retrieves the length of the user's `friends` array field on query.
 userSchema
-    .virtual('fullName')
+    .virtual('friendCount')
     .get(function () {
-        return `${this.firstName} ${this.lastName}`;
-    })
-    .set(function (v) {
-        const firstName = v.split(' ')[0];
-        const lastName = v.split(' ')[1];
-        this.set({ firstName, lastName });
+        return this.friends.length;
     });
 
 // Initializes the User model.
