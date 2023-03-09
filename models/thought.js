@@ -1,44 +1,5 @@
 const { Schema, model } = require('mongoose');
-// Subdocument data is embedded in the top-level document.
-
-// Reaction Schema.
-const reactionSchema = new Schema(
-  {
-    reactionId: {
-      type: Schema.Types.ObjectId,
-      default: new ObjectId,
-    },
-    reactionBody: {
-      type: String,
-      required: true,
-      maxLength: 280,
-    },
-    username: {
-      type: String,
-      required: true,
-    },
-    createdAt: {
-      timestamp: {
-        type: Date,
-        default: Date.now
-      }
-    }
-  },
-  {
-    toJSON: {
-      virtuals: true,
-    },
-    id: false,
-  }
-);
-
-// Uses a getter method to format the timestamp on query.
-reactionSchema
-  .virtual('formattedTimestamp').get(function () {
-    return this.timestamp.toLocaleString(); // format the timestamp using the toLocaleString method.
-    // returns a string representation of a date and time that is formatted according to the locale settings of the user's computer.
-  });
-
+const reactionSchema = require('./Reaction');
 
 // Schema to create Thought model.
 const thoughtSchema = new Schema(
@@ -50,9 +11,11 @@ const thoughtSchema = new Schema(
       maxLength: 280,
     },
     createdAt: {
-      timestamp: {
-        type: Date,
-        default: Date.now
+      type: Date,
+      default: Date.now,
+      get: function (timestamp) {
+        return timestamp.toLocaleString(); // format the timestamp using the toLocaleString method.
+        // returns a string representation of a date and time that is formatted according to the locale settings of the user's computer.
       }
     },
     username: {
@@ -65,6 +28,7 @@ const thoughtSchema = new Schema(
   {
     toJSON: {
       virtuals: true,
+      getters: true,
     },
     id: false,
   }
@@ -76,13 +40,6 @@ thoughtSchema
   // Getter
   .get(function () {
     return this.reactions.length;
-  });
-
-// Uses a getter method to format the timestamp on query.
-thoughtSchema
-  .virtual('formattedTimestamp').get(function () {
-    return this.timestamp.toLocaleString(); // format the timestamp using the toLocaleString method.
-    // returns a string representation of a date and time that is formatted according to the locale settings of the user's computer.
   });
 
 // Initialize our Thought model.

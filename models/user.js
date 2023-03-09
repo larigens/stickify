@@ -1,7 +1,7 @@
 // Models are defined through the Schema interface.
 const { Schema, model } = require('mongoose');
-const emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
-const usernameRegex = "/^[a-zA-Z0-9_]+$/";
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const usernameRegex = /^[a-zA-Z0-9_]+$/;
 
 // Schema to create User model.
 const userSchema = new Schema(
@@ -12,8 +12,8 @@ const userSchema = new Schema(
             unique: true, // Unique index.
             trim: true, // This will remove whitespace from the beginning and end of the string.
             validate: {
-                validator: function (value) {
-                    return usernameRegex.text(value);
+                validator: function (v) {
+                    return usernameRegex.test(v);
                 },
                 message: 'Username must only contain letters, numbers, and underscores.'
             },
@@ -24,7 +24,7 @@ const userSchema = new Schema(
             unique: true, // Unique index.
             validate: {
                 validator: function (value) {
-                    return emailRegex.text(value);
+                    return emailRegex.test(value);
                 },
                 message: props => `${props.value} is not a valid email!`
             },
@@ -40,7 +40,8 @@ const userSchema = new Schema(
             {
                 type: Schema.Types.ObjectId,
                 ref: 'user',
-            },
+                required: true
+            }
         ]
     },
     {
