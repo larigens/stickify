@@ -21,13 +21,4 @@ router.route('/:thoughtId/reactions').post(addThoughtReaction);
 // DELETE to pull and remove a reaction from a thought's reaction list by the reaction's `reactionId` value.
 router.route('/:thoughtId/reactions/:reactionId').delete(removeThoughtReaction);
 
-// ```json
-// // example data
-// {
-//   "thoughtText": "Here's a cool thought...",
-//   "username": "lernantino",
-//   "userId": "5edff358a0fcb779aa7b118b"
-// }
-// ```
-
 module.exports = router;

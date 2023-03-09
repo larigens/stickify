@@ -23,7 +23,7 @@ module.exports = {
     // Create a new user.
     createUser(req, res) {
         User.create(req.body)
-            .then((user) => res.json(user))
+            .then((newUser) => res.json(newUser))
             .catch((err) => res.status(500).json(err));
     },
     // Update a user by its `_id`.
@@ -33,10 +33,10 @@ module.exports = {
             { $set: req.body }, // Updates their new value using the request's body.
             { runValidators: true, new: true } // To validate the updated fields against the User schema's validation rules, and returns the updated user object instead of the original one.
         )
-            .then((user) =>
-                !user
+            .then((updatedUser) =>
+                !updatedUser
                     ? res.status(404).json({ message: 'No user with this id!' })
-                    : res.json(user)
+                    : res.json(updatedUser)
             )
             .catch((err) => {
                 console.log(err);
@@ -46,10 +46,10 @@ module.exports = {
     // Delete a user and his/her associated thoughts.
     deleteUser(req, res) {
         User.findOneAndDelete({ _id: req.params.userId }) // Finds the user to be deleted.
-            .then((user) =>
-                !user
+            .then((deletedUser) =>
+                !deletedUser
                     ? res.status(404).json({ message: 'No user with that ID' })
-                    : Thought.deleteMany({ _id: { $in: user.thoughts } }) // Calls the "deleteMany" method of the "Thought" model to delete all the thoughts associated with the user. 
+                    : Thought.deleteMany({ _id: { $in: deletedUser.thoughts } }) // Calls the "deleteMany" method of the "Thought" model to delete all the thoughts associated with the user. 
             )
             .then(() => res.json({ message: 'User and associated thoughts were deleted!' }))
             .catch((err) => res.status(500).json(err));
@@ -61,10 +61,10 @@ module.exports = {
             { $addToSet: { friends: req.body.userId } }, // The $addToSet operator is used to ensure that the new friend is only added to the array if they do not already exist in the array.
             { runValidators: true, new: true }
         )
-            .then((user) =>
-                !user
+            .then((newUserFriend) =>
+                !newUserFriend
                     ? res.status(404).json({ message: 'No user with this id!' })
-                    : res.json(user)
+                    : res.json(newUserFriend)
             )
             .catch((err) => res.status(500).json(err));
     },
@@ -75,8 +75,8 @@ module.exports = {
             { $pull: { friends: req.params.friendId } }, // the $pull operator to remove the friend object from the friends array where the friendId matches the specified friendId in the request parameters.
             { runValidators: true, new: true }
         )
-            .then((user) =>
-                !user
+            .then((removedUserFriend) =>
+                !removedUserFriend
                     ? res.status(404).json({ message: 'No user with this id!' })
                     : res.json({ message: 'Friend deleted!' })
             )

@@ -22,10 +22,10 @@ module.exports = {
     // Create a new thought.
     createThought(req, res) {
         Thought.create(req.body)
-            .then((thought) => {
+            .then((newThought) => {
                 return User.findOneAndUpdate(
                     { _id: req.body.userId },
-                    { $addToSet: { thoughts: thought._id } }, // Pushes the created thought's `_id` to the associated user's.
+                    { $addToSet: { thoughts: newThought._id } }, // Pushes the created thought's `_id` to the associated user's.
                     { new: true }
                 );
             })
@@ -45,10 +45,10 @@ module.exports = {
             { $set: req.body }, // Updates their new value using the request's body.
             { runValidators: true, new: true } // To validate the updated fields against the Thought schema's validation rules, and returns the updated thought object instead of the original one.
         )
-            .then((thought) =>
-                !thought
+            .then((updatedThought) =>
+                !updatedThought
                     ? res.status(404).json({ message: 'No thought with this id!' })
-                    : res.json(thought)
+                    : res.json(updatedThought)
             )
             .catch((err) => {
                 console.log(err);
@@ -58,8 +58,8 @@ module.exports = {
     // Delete a thought and removes the thought from the corresponding user's thoughts array.
     deleteThought(req, res) {
         Thought.findOneAndDelete({ _id: req.params.thoughtId }) // Finds the thought to be deleted.
-            .then((thought) =>
-                !thought
+            .then((deletedThought) =>
+                !deletedThought
                     ? res.status(404).json({ message: 'No thought with that ID' })
                     // Find the user who owns the thought and remove the thought from their thoughts array using $pull operator.
                     : User.findOneAndUpdate(
@@ -83,10 +83,10 @@ module.exports = {
             { $addToSet: { reactions: req.body } }, // The $addToSet operator is used to ensure that the new reaction is only added to the array if they do not already exist in the array.
             { runValidators: true, new: true }
         )
-            .then((thought) =>
-                !thought
+            .then((newReactionThought) =>
+                !newReactionThought
                     ? res.status(404).json({ message: 'No thought with this id!' })
-                    : res.json(thought)
+                    : res.json(newReactionThought)
             )
             .catch((err) => res.status(500).json(err));
     },
@@ -97,8 +97,8 @@ module.exports = {
             { $pull: { reactions: { reactionId: req.params.reactionId } } }, // the $pull operator to remove the reaction object from the reactions array where the reactionId matches the specified reactionId in the request parameters.
             { runValidators: true, new: true }
         )
-            .then((thought) =>
-                !thought
+            .then((removedReactionThought) =>
+                !removedReactionThought
                     ? res.status(404).json({ message: 'No thought with this id!' })
                     : res.json({ message: 'Reaction deleted!' })
             )

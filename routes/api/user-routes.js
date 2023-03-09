@@ -21,14 +21,4 @@ router.route('/:userId/friends').post(addUserFriend);
  // DELETE to pull and remove a friend from a user's friend list.
 router.route('/:userId/friends/:friendId').delete(removeUserFriend);
 
-// ```json
-// // example data
-// {
-//   "username": "lernantino",
-//   "email": "lernantino@gmail.com"
-// }
-// ```
-
-
 module.exports = router;
-

@@ -109,7 +109,9 @@ Launch the application by entering the command below on your terminal:
 npm start
 ```
 
-Once the server is running, you have the option to retrieve either all users and thoughts, or a specific one. Additionally, you can perform actions such as create, update, and delete users and thoughts
+You can use this API to build your own social network web application where users can share their thoughts, react to friends’ thoughts, and create a friend list.
+
+This API provides endpoints to create, read, update, and delete users and thoughts. You can also create and delete reactions to thoughts and add and remove friends to a user’s friend list.
 
 If you need more guidance on how to use Stickify, click [here]() for the tutorial!
 
