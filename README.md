@@ -35,6 +35,7 @@ Stickify is an API for a social network web application that allows users to sha
 - [Usage](#usage)
 - [Tests](#tests)
   - [Prerequisites](#prerequisites-1)
+  - [Setting Up](#setting-up-1)
   - [Running Tests](#running-tests)
 - [Questions](#questions)
 - [Contributing](#contributing)
@@ -113,13 +114,23 @@ You can use this API to build your own social network web application where user
 
 This API provides endpoints to create, read, update, and delete users and thoughts. You can also create and delete reactions to thoughts and add and remove friends to a user’s friend list.
 
-If you need more guidance on how to use Stickify, click [here]() for the tutorial!
+If you need more guidance on how to use Stickify, click [here](https://drive.google.com/file/d/1W4BDybJLhourhyLzCxMwgYOScv82ov4O/view) for the tutorial!
 
 ## Tests
 
 ### Prerequisites
 
 To test this application, you will need to install [Postman API](https://www.postman.com/downloads/) or [Insomnia](https://insomnia.rest/download).
+
+### Setting Up
+
+Open your terminal, make sure you are in the directory of this application and type the command below to seed data to the database so that you can test the routes.
+
+```bash
+npm run seed
+```
+
+![npm run seed results](assets/test.png)
 
 ### Running Tests
 
