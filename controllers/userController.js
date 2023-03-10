@@ -58,7 +58,7 @@ module.exports = {
     addUserFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $addToSet: { friends: req.body.userId } }, // The $addToSet operator is used to ensure that the new friend is only added to the array if they do not already exist in the array.
+            { $addToSet: { friends: req.body.friendId } }, // The $addToSet operator is used to ensure that the new friend is only added to the array if they do not already exist in the array.
             { runValidators: true, new: true }
         )
             .then((newUserFriend) =>
